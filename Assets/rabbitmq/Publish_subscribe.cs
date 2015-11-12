@@ -37,7 +37,7 @@ public class Publish_subscribe : MonoBehaviour {
 	void Update () {
 		
 	}
-	public void teste(){
-		Debug.Log ("clique no botao");
+	public void Teste(){
+		Debug.Log("Funfo");
 	}
 }
