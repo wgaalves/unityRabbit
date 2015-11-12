@@ -1,0 +1,13 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/rabbitmq/CsSample.cs">
+    <Files>
+      <File FileName="Assets/rabbitmq/CsSample.cs" Line="29" Column="3" />
+      <File FileName="Assets/rabbitmq/Publish_subscribe.cs" Line="17" Column="23" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
