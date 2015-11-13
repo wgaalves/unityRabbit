@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class RpcQueue : MonoBehaviour {
 
@@ -11,5 +12,10 @@ public class RpcQueue : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+	}
+	public void changeQueue(){
+		Text text;
+		text =  GameObject.Find("queueText").GetComponent<Text>();
+		text.text = "RPC Queue";
 	}
 }

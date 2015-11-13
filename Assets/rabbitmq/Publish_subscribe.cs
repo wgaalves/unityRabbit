@@ -8,6 +8,7 @@ using RabbitMQ.Client.Events;
 using RabbitMQ.Client.MessagePatterns;
 using RabbitMQ.Util;
 using System.Text;
+using UnityEngine.UI;
 
 
 public class Publish_subscribe : MonoBehaviour {
@@ -26,12 +27,10 @@ public class Publish_subscribe : MonoBehaviour {
 
 				var body = Encoding.UTF8.GetBytes(message);
 				channel.BasicPublish(exchange: "publicSubscribe", routingKey: "", basicProperties: null, body: body);
-				Console.WriteLine(" [x] Sent {0}", message);
+				Debug.Log(" [x] Sent {0}" + message);
 			}
 			
-			Console.WriteLine(" Press [enter] to exit.");
-			Console.ReadLine();
-		}
+	}
 
 	// Update is called once per frame
 	void Update () {
@@ -39,5 +38,10 @@ public class Publish_subscribe : MonoBehaviour {
 	}
 	public void Teste(){
 		Debug.Log("Funfo");
+	}
+	public void changeQueue(){
+		Text text;
+		text =  GameObject.Find("queueText").GetComponent<Text>();
+		text.text = "Publish / Subscribe Queue";
 	}
 }

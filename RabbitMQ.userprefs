@@ -1,10 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/rabbitmq/Publish_subscribe.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/rabbitmq/SingleQueue.cs">
     <Files>
-      <File FileName="Assets/rabbitmq/Publish_subscribe.cs" Line="41" Column="22" />
-      <File FileName="Assets/rabbitmq/CsSample.cs" Line="29" Column="3" />
-      <File FileName="Assets/Scripts/RabbitManager.cs" Line="1" Column="1" />
+      <File FileName="Assets/rabbitmq/SingleQueue.cs" Line="3" Column="26" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
