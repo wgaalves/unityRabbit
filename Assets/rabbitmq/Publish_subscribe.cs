@@ -16,7 +16,7 @@ public class Publish_subscribe : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Debug.Log ("START");
-			var factory = new ConnectionFactory() { HostName = "diablo" };
+		/*	var factory = new ConnectionFactory() { HostName = "diablo" };
 			using(var connection = factory.CreateConnection())
 				using(var channel = connection.CreateModel())
 			{
@@ -28,7 +28,7 @@ public class Publish_subscribe : MonoBehaviour {
 				var body = Encoding.UTF8.GetBytes(message);
 				channel.BasicPublish(exchange: "publicSubscribe", routingKey: "", basicProperties: null, body: body);
 				Debug.Log(" [x] Sent {0}" + message);
-			}
+			}*/
 			
 	}
 

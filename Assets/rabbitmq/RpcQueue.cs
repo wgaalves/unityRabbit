@@ -13,7 +13,7 @@ public class RpcQueue : MonoBehaviour {
 	void Update () {
 	
 	}
-	public void changeQueue(){
+	public void ChangeQueue(){
 		Text text;
 		text =  GameObject.Find("queueText").GetComponent<Text>();
 		text.text = "RPC Queue";
