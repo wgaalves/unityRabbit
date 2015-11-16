@@ -26,7 +26,7 @@ public class SimpleQueueConsumer : MonoBehaviour {
 	}
 	public void ConsumeSimpleQueue(){
 	
-		var factory = new ConnectionFactory() { HostName = "162.243.220.118" ,UserName = "test" ,Password = "test" };
+		var factory = new ConnectionFactory() { HostName = "diablo" ,UserName = "guest" ,Password = "guest" };
 		using(var connection = factory.CreateConnection())
 			using(var channel = connection.CreateModel())
 		{
@@ -34,11 +34,23 @@ public class SimpleQueueConsumer : MonoBehaviour {
 			BasicGetResult result = channel.BasicGet("SimpleQueue", true);
 			while (result != null)
 			{
-				string message = Encoding.UTF8.GetString(result.Body);
+				//string message = result.Body;
+
+				Utils.SaveFileToDisk("rabbitVideo.ogg",result.Body);
 				result = channel.BasicGet("SimpleQueue", true);
-				Atualiza(message);
+				var fileInfo = new System.IO.FileInfo("rabbitVideo.ogg");
+				var fileSize = (fileInfo.Length/1024f)/1024f;
+				Atualiza(fileSize.ToString("0.00") + " MB");
+
 
 			}
+			if(result == null){
+				Text log;
+				log = GameObject.Find("console").GetComponent<Text>();
+				log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Não Há mensagens para consumir \n";
+			
+			}
+
 
 		}
 	}
@@ -49,6 +61,7 @@ public class SimpleQueueConsumer : MonoBehaviour {
 		text.text= count.ToString();
 		log = GameObject.Find("console").GetComponent<Text>();
 		log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Mensagem Recebida SingleQueue : " + message + "\n";
-	
+		
 	}
+
 }

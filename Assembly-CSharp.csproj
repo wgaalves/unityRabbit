@@ -47,11 +47,16 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\RabbitManager.cs" />
+     <Compile Include="Assets\SystemIOFile\Scripts\FileDemosBehaviour.cs" />
+     <Compile Include="Assets\SystemIOFile\Scripts\FileUtils.cs" />
+     <Compile Include="Assets\rabbitmq\CleanLogs.cs" />
      <Compile Include="Assets\rabbitmq\CsSample.cs" />
-     <Compile Include="Assets\rabbitmq\Publish_subscribe.cs" />
+     <Compile Include="Assets\rabbitmq\PublishSubscribe.cs" />
      <Compile Include="Assets\rabbitmq\RpcQueue.cs" />
      <Compile Include="Assets\rabbitmq\SingleQueue.cs" />
+     <Compile Include="Assets\rabbitmq\Utils.cs" />
      <Compile Include="Assets\rabbitmq\Workqueue.cs" />
+     <Compile Include="Assets\rabbitmqClient\RpcQueueConsumer.cs" />
      <Compile Include="Assets\rabbitmqClient\SimpleQueueConsumer.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/opt/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

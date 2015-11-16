@@ -6,11 +6,12 @@ using System.Text;
 using System;
 using UnityEngine.UI;
 
+
 public class SingleQueue : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Debug.Log(Path.GetFileName("/arquivos/rabbit.ogg"));
+
 	}
 	
 	// Update is called once per frame
@@ -24,14 +25,18 @@ public class SingleQueue : MonoBehaviour {
 	}
 
 	public void SendSimpleQueue(){
-		var factory = new ConnectionFactory() { HostName = "162.243.220.118" ,UserName = "test" ,Password = "test" };
+		string filepath = Utils.GetFullPathFileName("rabbit.ogg");
+		byte[] body = Utils.GetFileAsBytesOrNull (filepath);
+
+
+		var factory = new ConnectionFactory() { HostName = "diablo" ,UserName = "guest" ,Password = "guest" };
 		using(var connection = factory.CreateConnection())
 			using(var channel = connection.CreateModel())
 		{
 			channel.QueueDeclare("SimpleQueue");
 			
-			string message = "Hello World!";
-			var body = Encoding.UTF8.GetBytes(message);
+//			string message = "Hello World!";
+			//var body = Encoding.UTF8.GetBytes(message);
 			
 			channel.BasicPublish(exchange: "",
 			                     routingKey: "SimpleQueue",
@@ -43,8 +48,10 @@ public class SingleQueue : MonoBehaviour {
 			int count = int.Parse(text.text) + 1;
 			text.text= count.ToString();
 			log = GameObject.Find("console").GetComponent<Text>();
-			log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Mensagem Enviada SingleQueue : " + message + "\n";
-			Debug.Log(" [x] Sent {0}" + message);
+			var fileInfo = new System.IO.FileInfo("rabbit.ogg");
+			var fileSize = (fileInfo.Length/1024f)/1024f;
+			log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Mensagem Enviada SingleQueue : " + fileSize.ToString("0.00") + " MB" + "\n";
+
 			connection.Close();
 		}
 
