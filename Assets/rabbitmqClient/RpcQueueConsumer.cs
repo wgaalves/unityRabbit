@@ -50,7 +50,7 @@ public class RpcQueueConsumer : MonoBehaviour {
 		
 		string filepath = Utils.GetFullPathFileName("rabbit.ogg");
 		byte[] messageBytes = Utils.GetFileAsBytesOrNull (filepath);
-		;
+
 		channel.BasicPublish(exchange: "",
 		                     routingKey: "rpc_queue",
 		                     basicProperties: props,

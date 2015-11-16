@@ -20,8 +20,7 @@ public class RpcQueue : MonoBehaviour {
 	void Update () {
 	
 	}
-
-
+	
 	public void ServerRPCQueue(){
 				
 		var factory = new ConnectionFactory() { HostName = "diablo" , UserName = "guest", Password = "guest"};
@@ -50,8 +49,9 @@ public class RpcQueue : MonoBehaviour {
 				try
 				{
 					Utils.SaveFileToDisk("rpcRecebido.png",body);
-					var fileInfo = new System.IO.FileInfo("rabbitVideo.ogg");
-					var fileSize = (fileInfo.Length/1024f)/1024f;
+					//var fileInfo = new System.IO.FileInfo("rabbitVideo.ogg");
+					//usar tamanho arquivo para validacao
+					//var fileSize = (fileInfo.Length/1024f)/1024f;
 					string filepath = Utils.GetFullPathFileName("rpc.png");
 					response = Utils.GetFileAsBytesOrNull (filepath);
 				}

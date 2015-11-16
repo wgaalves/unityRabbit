@@ -58,6 +58,7 @@
      <Compile Include="Assets\rabbitmq\Workqueue.cs" />
      <Compile Include="Assets\rabbitmqClient\RpcQueueConsumer.cs" />
      <Compile Include="Assets\rabbitmqClient\SimpleQueueConsumer.cs" />
+     <Compile Include="Assets\rabbitmqClient\WorkQueueConsumer.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>/opt/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
