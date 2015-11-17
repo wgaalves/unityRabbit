@@ -103,7 +103,7 @@ public class RpcQueue : MonoBehaviour {
 			
 			while(true)
 			{
-				string response = null;
+				byte[] response = null;
 				var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
 				
 				var body = ea.Body;
@@ -114,25 +114,27 @@ public class RpcQueue : MonoBehaviour {
 				try
 				{
 					//processa requisição
-					var message = Encoding.UTF8.GetString(body);
-					int n = int.Parse(message);
-					Console.WriteLine(" [.] fib({0})", message);
-					response = fib(n).ToString();
+					Utils.SaveFileToDisk("Chegou.png",body);
+					AtualizaRecebidas("Chegou.png");
+					string filepath = Utils.GetFullPathFileName("rpcRetorno.png");
+					response = Utils.GetFileAsBytesOrNull (filepath);
+					 
 				}
 				catch(Exception e)
 				{
-					Console.WriteLine(" [.] " + e.Message);
-					response = "";
+					log.text = log.text + "Erro : " + e.Message ;
+					response = null;
 				}
 				finally
 				{
-					var responseBytes = Encoding.UTF8.GetBytes(response);
+					var responseBytes =response;
 					channel.BasicPublish(exchange: "",
 					                     routingKey: props.ReplyTo,
 					                     basicProperties: replyProps,
 					                     body: responseBytes);
 					channel.BasicAck(deliveryTag: ea.DeliveryTag,
 					                 multiple: false);
+					AtualizaEnviadas("rpcRetorno.png");
 				}
 			}
 		}
