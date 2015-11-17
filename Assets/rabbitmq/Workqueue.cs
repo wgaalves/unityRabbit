@@ -63,17 +63,11 @@ public class Workqueue : MonoBehaviour {
         using(var connection = factory.CreateConnection())
         using(var channel = connection.CreateModel())
         {
-            //channel.QueueDeclare("Work_Queue"); //version shup
-			channel.QueueDeclare("Work_Queue",true,false,false,null);
-
-
-            channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
-
-            log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Aguardando mensagens. \n";
-
-			//var consumer = new EventingBasicConsumer(channel); //version shup
-            var consumer = new EventingBasicConsumer(channel);
-            consumer.Received += (model, ea) =>
+			channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+		
+			
+			var consumer = new EventingBasicConsumer(channel);
+			consumer.Received += (model, ea) =>
             {
                 var body = ea.Body;
                 //var message = Encoding.UTF8.GetString(body);
@@ -83,12 +77,14 @@ public class Workqueue : MonoBehaviour {
                 //
                 Thread.Sleep(1000);
 				log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] recebendo mensagens. \n";
-                Debug.Log(body.Length);
+               
 
-                channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+				channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+
             };
-            //channel.BasicConsume("Work_Queue",null,consumer); //version shup
-			channel.BasicConsume("Work_Queue",true,consumer); 
+			channel.BasicConsume(queue: "Work_Queue",
+			                     noAck: false,
+			                     consumer: consumer); 
 	}
 
 }
