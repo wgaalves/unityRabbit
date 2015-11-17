@@ -25,7 +25,7 @@ public class SingleQueue : MonoBehaviour {
 	}
 
 	public void SendSimpleQueue(){
-		string filepath = Utils.GetFullPathFileName("rabbit.ogg");
+		string filepath = Utils.GetFullPathFileName("Chegou.png");
 		byte[] body = Utils.GetFileAsBytesOrNull (filepath);
 
 
@@ -49,7 +49,7 @@ public class SingleQueue : MonoBehaviour {
 			int count = int.Parse(text.text) + 1;
 			text.text= count.ToString();
 			log = GameObject.Find("console").GetComponent<Text>();
-			var fileInfo = new System.IO.FileInfo("rabbit.ogg");
+			var fileInfo = new System.IO.FileInfo("Chegou.png");
 			var fileSize = (fileInfo.Length/1024f)/1024f;
 			log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Mensagem Enviada SingleQueue : " + fileSize.ToString("0.00") + " MB" + "\n";
 
@@ -66,16 +66,16 @@ public class SingleQueue : MonoBehaviour {
 			using(var channel = connection.CreateModel())
 		{
 			//channel.QueueDeclare("SimpleQueue"); //version shup
-			channel.QueueDeclare("SimpleQueue",true,false,false,null);
+			channel.QueueDeclare("SimpleQueue",false,false,false,null);
 
 			BasicGetResult result = channel.BasicGet("SimpleQueue", true);
 			while (result != null)
 			{
 				//string message = result.Body;
 
-				Utils.SaveFileToDisk("rabbitVideo.ogg",result.Body);
+				Utils.SaveFileToDisk("singleQueue.png",result.Body);
 				result = channel.BasicGet("SimpleQueue", true);
-				var fileInfo = new System.IO.FileInfo("rabbitVideo.ogg");
+				var fileInfo = new System.IO.FileInfo("singleQueue.png");
 				var fileSize = (fileInfo.Length/1024f)/1024f;
 				Atualiza(fileSize.ToString("0.00") + " MB");
 
