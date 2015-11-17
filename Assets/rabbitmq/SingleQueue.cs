@@ -34,7 +34,7 @@ public class SingleQueue : MonoBehaviour {
 			using(var channel = connection.CreateModel())
 		{
 			//channel.QueueDeclare("SimpleQueue"); //version shup
-			channel.QueueDeclare("SimpleQueue",true,false,false,null);
+			channel.QueueDeclare("SimpleQueue",false,false,false,null);
 			
 //			string message = "Hello World!";
 			//var body = Encoding.UTF8.GetBytes(message);

@@ -2,13 +2,14 @@
 using System.Collections;
 using UnityEngine.UI;
 using System;
+using System.Text;
 
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
 using RabbitMQ.Client.MessagePatterns;
 using RabbitMQ.Util;
-using System.Text;
+
 
 public class RpcQueue : MonoBehaviour {
 
@@ -53,14 +54,15 @@ public class RpcQueue : MonoBehaviour {
 		                     basicProperties: props,
 		                     body: messageBytes);
 		
-		while(true)
-		{
+		//while(true)
+		//{
 			var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
-			if(ea.BasicProperties.CorrelationId == corrId)
-			{
-				//return ea.Body;
-			}
+			if (ea.BasicProperties.CorrelationId == corrId) {
+			return Encoding.UTF8.GetString (ea.Body);
+		} else {
+			return "";
 		}
+		//}
 	}
 	
 	public void Close()
@@ -70,7 +72,7 @@ public class RpcQueue : MonoBehaviour {
 
 
 
-	public static void ClientRPCQueue()
+	public  void ClientRPCQueue()
 	{
 		var rpcClient = new RpcQueue();
 		rpcClient.Call("rabbit.png");
@@ -97,9 +99,9 @@ public class RpcQueue : MonoBehaviour {
 			Text log = GameObject.Find("console").GetComponent<Text>();
 			log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Aguardando Requisições\n";
 			
-			while(true)
-			{
-				byte[] response = null;
+			//while(true)
+			//{
+				string response = null;
 				var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
 				
 				var body = ea.Body;
@@ -112,9 +114,8 @@ public class RpcQueue : MonoBehaviour {
 					//processa requisição
 					Utils.SaveFileToDisk("requisicao.png",body);
 					AtualizaRecebidas("requisicao.png");
-					string filepath = Utils.GetFullPathFileName("rabbit.png");
-					response = Utils.GetFileAsBytesOrNull (filepath);
-					 
+					response = "mensagem recebida";
+					
 				}
 				catch(Exception e)
 				{
@@ -123,16 +124,16 @@ public class RpcQueue : MonoBehaviour {
 				}
 				finally
 				{
-					var responseBytes =response;
+					var responseBytes = Encoding.UTF8.GetBytes(response.ToString());
 					channel.BasicPublish(exchange: "",
 					                     routingKey: props.ReplyTo,
 					                     basicProperties: replyProps,
 					                     body: responseBytes);
 					channel.BasicAck(deliveryTag: ea.DeliveryTag,
 					                 multiple: false);
-					AtualizaEnviadas("rabbit.png");
+					//AtualizaEnviadas("rabbit.png");
 				}
-			}
+			//}
 		}
 	}
 	
