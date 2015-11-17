@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using RabbitMQ.Client;
 using System.Text;
 using System;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
+using System.Threading;
 
 public class Workqueue : MonoBehaviour {
 
@@ -22,7 +25,7 @@ public class Workqueue : MonoBehaviour {
 		text.text = "Work Queue";
 	}
 
-	 public void NewTask(){
+	public void NewTask(){
 		string filepath = Utils.GetFullPathFileName("Chegou.png");
 		byte[] body = Utils.GetFileAsBytesOrNull (filepath);
 		var factory = new ConnectionFactory() { HostName = "diablo" };
@@ -52,4 +55,36 @@ public class Workqueue : MonoBehaviour {
 		}
 
 	}
+	public void Worker(){
+
+		Text log = GameObject.Find("console").GetComponent<Text>();
+		   	  var factory = new ConnectionFactory() { HostName = "diablo", UserName = "guest" ,Password = "guest"};
+        using(var connection = factory.CreateConnection())
+        using(var channel = connection.CreateModel())
+        {
+            channel.QueueDeclare("Work_Queue");
+
+            channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
+
+            log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Aguardando mensagens. \n";
+
+            var consumer = new EventingBasicConsumer();
+            consumer.Received += (model, ea) =>
+            {
+                var body = ea.Body;
+                //var message = Encoding.UTF8.GetString(body);
+                //Console.WriteLine(" [x] Received {0}", message);
+
+               /// int dots = message.Split('.').Length - 1;
+                //
+                Thread.Sleep(1000);
+				log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] recebendo mensagens. \n";
+                Debug.Log(body.Length);
+
+                channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+            };
+            channel.BasicConsume("Work_Queue",null,consumer);
+	}
+
+}
 }

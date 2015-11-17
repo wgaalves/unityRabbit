@@ -61,11 +61,11 @@ public class PublishSubscribe : MonoBehaviour {
 	
 	}
 	public void receivePSMessage(){
-		var factory = new ConnectionFactory() { HostName = "diablo", UserName = "guest", Password = "guest" };
-		using(var connection = factory.CreateConnection())
-			using(var channel = connection.CreateModel())
-		{
-			channel.ExchangeDeclare(exchange: "publishSubEX", type: "fanout");
+		var factory = new ConnectionFactory() { HostName = "diablo", UserName = "guest", Password = "guest"  };
+        using(var connection = factory.CreateConnection())
+        using(var channel = connection.CreateModel())
+        {
+		channel.ExchangeDeclare(exchange: "publishSubEX", type: "fanout");
 			
 			var queueName = channel.QueueDeclare();
 			channel.QueueBind(queueName,"publishSubEX","",true,null);
@@ -75,14 +75,15 @@ public class PublishSubscribe : MonoBehaviour {
 			var consumer = new EventingBasicConsumer();
 			consumer.Received += (model, ea) =>
 			{
-				var body = ea.Body;
+				/*var body = ea.Body;
 				Utils.SaveFileToDisk("rabbit.png",body);
 				var fileInfo = new System.IO.FileInfo("rabbit.png");
 				var fileSize = (fileInfo.Length/1024f)/1024f;
-				log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Tamanho mensagem recebida."+ fileSize +" MB\n";
+				log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Tamanho mensagem recebida."+ fileSize +" MB\n";*/
 				
 			};
 			channel.BasicConsume(queueName, null,consumer);
-	}
+
+		}
 	}
 }

@@ -1,11 +1,12 @@
 using System.IO;
 using UnityEngine;
 using System.Collections;
-using RabbitMQ.Client;
 using System.Text;
 using System;
 using UnityEngine.UI;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 
 
 public class RpcQueueConsumer : MonoBehaviour {
