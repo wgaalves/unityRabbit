@@ -73,7 +73,7 @@ public class RpcQueue : MonoBehaviour {
 	public static void ClientRPCQueue()
 	{
 		var rpcClient = new RpcQueue();
-		var response = rpcClient.Call("rabbit.png");
+		rpcClient.Call("rabbit.png");
 		rpcClient.Close();
 	
 	}
@@ -130,7 +130,7 @@ public class RpcQueue : MonoBehaviour {
 					                     body: responseBytes);
 					channel.BasicAck(deliveryTag: ea.DeliveryTag,
 					                 multiple: false);
-					AtualizaEnviadas("rpcRetorno.png");
+					AtualizaEnviadas("rabbit.png");
 				}
 			}
 		}
