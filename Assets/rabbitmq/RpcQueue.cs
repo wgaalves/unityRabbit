@@ -5,11 +5,17 @@ using System;
 
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 using RabbitMQ.Client.MessagePatterns;
 using RabbitMQ.Util;
 using System.Text;
 
 public class RpcQueue : MonoBehaviour {
+
+	private IConnection connection;
+	private IModel channel;
+	private string replyQueueName;
+	private QueueingBasicConsumer consumer;
 
 	// Use this for initialization
 	void Start () {
@@ -20,29 +26,84 @@ public class RpcQueue : MonoBehaviour {
 	void Update () {
 	
 	}
+
+
+	public void RPConnection(){
+		var factory = new ConnectionFactory() {HostName = "diablo" , UserName = "guest", Password = "guest" };
+		connection = factory.CreateConnection();
+		channel = connection.CreateModel();
+		replyQueueName = channel.QueueDeclare().QueueName;
+		consumer = new QueueingBasicConsumer(channel);
+		channel.BasicConsume(queue: replyQueueName,
+		                     noAck: true,
+		                     consumer: consumer);
+	}
+	
+	public string Call(string imagem)
+	{
+		var corrId = Guid.NewGuid().ToString();
+		var props = channel.CreateBasicProperties();
+		props.ReplyTo = replyQueueName;
+		props.CorrelationId = corrId;
+		
+		string filepath = Utils.GetFullPathFileName(imagem);
+		byte[] messageBytes = Utils.GetFileAsBytesOrNull (filepath);
+		channel.BasicPublish(exchange: "",
+		                     routingKey: "rpc_queue",
+		                     basicProperties: props,
+		                     body: messageBytes);
+		
+		while(true)
+		{
+			var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
+			if(ea.BasicProperties.CorrelationId == corrId)
+			{
+				return Encoding.UTF8.GetString(ea.Body);
+			}
+		}
+	}
+	
+	public void Close()
+	{
+		connection.Close();
+	}
+
+
+
+	public static void ClientRPCQueue()
+	{
+		var rpcClient = new RpcQueue();
+		
+		Console.WriteLine(" [x] Requesting fib(30)");
+		var response = rpcClient.Call("30");
+		Console.WriteLine(" [.] Got '{0}'", response);
+		
+		rpcClient.Close();
+	
+	}
 	
 	public void ServerRPCQueue(){
 				
-		var factory = new ConnectionFactory() { HostName = "diablo" , UserName = "guest", Password = "guest"};
+		var factory = new ConnectionFactory() { HostName = "diablo" , UserName = "guest", Password = "guest" };
 		using(var connection = factory.CreateConnection())
 			using(var channel = connection.CreateModel())
 		{
-			//channel.QueueDeclare("rpc_queue"); //version shup
-			channel.QueueDeclare("rpc_queue",true,false,false,null);
+			channel.QueueDeclare(queue: "rpc_queue",
+			                     durable: false,
+			                     exclusive: false,
+			                     autoDelete: false,
+			                     arguments: null);
 			channel.BasicQos(0, 1, false);
 			var consumer = new QueueingBasicConsumer(channel);
-
-			//channel.BasicConsume("rpc_queue",null,consumer); //version shup
-			channel.BasicConsume("rpc_queue",true,consumer);
-
-			//Text log = GameObject.Find("console").GetComponent<Text>();
-			//log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Aguardando Requisições RPC";
+			channel.BasicConsume(queue: "rpc_queue",
+			                     noAck: false,
+			                     consumer: consumer);
+			Text log = GameObject.Find("console").GetComponent<Text>();
+			log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Aguardando Requisições\n";
 			
 			while(true)
-			{	Text log = GameObject.Find("console").GetComponent<Text>();
-				log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Aguardando Requisições RPC";
-
-				byte[] response = null;
+			{
+				string response = null;
 				var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
 				
 				var body = ea.Body;
@@ -52,21 +113,20 @@ public class RpcQueue : MonoBehaviour {
 				
 				try
 				{
-					Utils.SaveFileToDisk("rpcRecebido.png",body);
-					//var fileInfo = new System.IO.FileInfo("rabbitVideo.ogg");
-					//usar tamanho arquivo para validacao
-					//var fileSize = (fileInfo.Length/1024f)/1024f;
-					string filepath = Utils.GetFullPathFileName("rpc.png");
-					response = Utils.GetFileAsBytesOrNull (filepath);
+					//processa requisição
+					var message = Encoding.UTF8.GetString(body);
+					int n = int.Parse(message);
+					Console.WriteLine(" [.] fib({0})", message);
+					response = fib(n).ToString();
 				}
 				catch(Exception e)
 				{
-					log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Error: "  + e.Message;
-					response = null;
+					Console.WriteLine(" [.] " + e.Message);
+					response = "";
 				}
 				finally
 				{
-					var responseBytes = response;
+					var responseBytes = Encoding.UTF8.GetBytes(response);
 					channel.BasicPublish(exchange: "",
 					                     routingKey: props.ReplyTo,
 					                     basicProperties: replyProps,
