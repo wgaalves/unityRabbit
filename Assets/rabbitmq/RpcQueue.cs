@@ -27,10 +27,14 @@ public class RpcQueue : MonoBehaviour {
 		using(var connection = factory.CreateConnection())
 			using(var channel = connection.CreateModel())
 		{
-			channel.QueueDeclare("rpc_queue");
+			//channel.QueueDeclare("rpc_queue"); //version shup
+			channel.QueueDeclare("rpc_queue",true,false,false,null);
 			channel.BasicQos(0, 1, false);
 			var consumer = new QueueingBasicConsumer(channel);
-			channel.BasicConsume("rpc_queue",null,consumer);
+
+			//channel.BasicConsume("rpc_queue",null,consumer); //version shup
+			channel.BasicConsume("rpc_queue",true,consumer);
+
 			//Text log = GameObject.Find("console").GetComponent<Text>();
 			//log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Aguardando Requisições RPC";
 			

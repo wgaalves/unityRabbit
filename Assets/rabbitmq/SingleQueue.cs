@@ -33,7 +33,8 @@ public class SingleQueue : MonoBehaviour {
 		using(var connection = factory.CreateConnection())
 			using(var channel = connection.CreateModel())
 		{
-			channel.QueueDeclare("SimpleQueue");
+			//channel.QueueDeclare("SimpleQueue"); //version shup
+			channel.QueueDeclare("SimpleQueue",true,false,false,null);
 			
 //			string message = "Hello World!";
 			//var body = Encoding.UTF8.GetBytes(message);
@@ -64,7 +65,9 @@ public class SingleQueue : MonoBehaviour {
 		using(var connection = factory.CreateConnection())
 			using(var channel = connection.CreateModel())
 		{
-			channel.QueueDeclare("SimpleQueue");
+			//channel.QueueDeclare("SimpleQueue"); //version shup
+			channel.QueueDeclare("SimpleQueue",true,false,false,null);
+
 			BasicGetResult result = channel.BasicGet("SimpleQueue", true);
 			while (result != null)
 			{

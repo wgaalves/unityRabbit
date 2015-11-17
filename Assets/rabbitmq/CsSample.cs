@@ -37,12 +37,12 @@ public class CsSample : MonoBehaviour {
         ch.ExchangeDeclare(exchange, "fanout");
         string queueName = ch.QueueDeclare();
 
-        //ch.QueueBind(queueName, exchange, "");
+        ch.QueueBind(queueName, exchange, "");
+		//ch.QueueBind(queueName,exchange,"",false,null);  //version shup
 
-		ch.QueueBind(queueName,exchange,"",false,null);  //version shup
         consumer = new QueueingBasicConsumer(ch);	
-        //ch.BasicConsume(queueName, true, consumer);
-		ch.BasicConsume(queueName,null,consumer);  //version shup
+        ch.BasicConsume(queueName, true, consumer);
+		//ch.BasicConsume(queueName,null,consumer);  //version shup
 
         queue = new System.Collections.Queue();
         queue.Clear();

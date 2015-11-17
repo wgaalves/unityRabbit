@@ -68,11 +68,13 @@ public class PublishSubscribe : MonoBehaviour {
 		channel.ExchangeDeclare(exchange: "publishSubEX", type: "fanout");
 			
 			var queueName = channel.QueueDeclare();
-			channel.QueueBind(queueName,"publishSubEX","",true,null);
+			//channel.QueueBind(queueName,"publishSubEX","",true,null); //version shup
+			channel.QueueBind(queueName,"publishSubEX","");
+
 			Text log = GameObject.Find("console").GetComponent<Text>();
 			log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Aguardando mensagens.\n";
 			
-			var consumer = new EventingBasicConsumer();
+			var consumer = new EventingBasicConsumer(channel);
 			consumer.Received += (model, ea) =>
 			{
 				/*var body = ea.Body;
@@ -82,7 +84,8 @@ public class PublishSubscribe : MonoBehaviour {
 				log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Tamanho mensagem recebida."+ fileSize +" MB\n";*/
 				
 			};
-			channel.BasicConsume(queueName, null,consumer);
+			//channel.BasicConsume(queueName, null,consumer); //verion shup
+			channel.BasicConsume(queueName, true,consumer);
 
 		}
 	}

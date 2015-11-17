@@ -39,7 +39,8 @@ public class RpcQueueConsumer : MonoBehaviour {
 		channel = connection.CreateModel();
 		replyQueueName = channel.QueueDeclare();
 		consumer = new QueueingBasicConsumer(channel);
-		channel.BasicConsume(replyQueueName,null,consumer);
+		//channel.BasicConsume(replyQueueName,null,consumer); //version shup
+		channel.BasicConsume(replyQueueName,true,consumer);
 	}
 	
 	public string Call(string message)
