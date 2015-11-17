@@ -28,7 +28,7 @@ public class RpcQueue : MonoBehaviour {
 	}
 
 
-	public void RPConnection(){
+	public  RpcQueue(){
 		var factory = new ConnectionFactory() {HostName = "diablo" , UserName = "guest", Password = "guest" };
 		connection = factory.CreateConnection();
 		channel = connection.CreateModel();
@@ -58,7 +58,7 @@ public class RpcQueue : MonoBehaviour {
 			var ea = (BasicDeliverEventArgs)consumer.Queue.Dequeue();
 			if(ea.BasicProperties.CorrelationId == corrId)
 			{
-				return Encoding.UTF8.GetString(ea.Body);
+				//return ea.Body;
 			}
 		}
 	}
@@ -73,11 +73,7 @@ public class RpcQueue : MonoBehaviour {
 	public static void ClientRPCQueue()
 	{
 		var rpcClient = new RpcQueue();
-		
-		Console.WriteLine(" [x] Requesting fib(30)");
-		var response = rpcClient.Call("30");
-		Console.WriteLine(" [.] Got '{0}'", response);
-		
+		var response = rpcClient.Call("rabbit.png");
 		rpcClient.Close();
 	
 	}
@@ -114,9 +110,9 @@ public class RpcQueue : MonoBehaviour {
 				try
 				{
 					//processa requisição
-					Utils.SaveFileToDisk("Chegou.png",body);
-					AtualizaRecebidas("Chegou.png");
-					string filepath = Utils.GetFullPathFileName("rpcRetorno.png");
+					Utils.SaveFileToDisk("requisicao.png",body);
+					AtualizaRecebidas("requisicao.png");
+					string filepath = Utils.GetFullPathFileName("rabbit.png");
 					response = Utils.GetFileAsBytesOrNull (filepath);
 					 
 				}
@@ -146,7 +142,9 @@ public class RpcQueue : MonoBehaviour {
 		int count = int.Parse(text.text) + 1;
 		text.text= count.ToString();
 		log = GameObject.Find("console").GetComponent<Text>();
-		log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Mensagem Recebida RPC Queue : " + message + "\n";
+		var fileInfo = new System.IO.FileInfo(message);
+		var fileSize = (fileInfo.Length/1024f)/1024f;
+		log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Mensagem Recebida RPC Queue Tamanho : " + fileSize.ToString("0.00") + "MB\n";
 		
 	}
 	public void AtualizaEnviadas(String message){
@@ -155,7 +153,9 @@ public class RpcQueue : MonoBehaviour {
 		int count =int.Parse(pe.text) + 1;
 		pe.text= count.ToString();
 		log = GameObject.Find("console").GetComponent<Text>();
-		log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Mensagem Recebida RPC Queue : " + message + "\n";
+		var fileInfo = new System.IO.FileInfo(message);
+		var fileSize = (fileInfo.Length/1024f)/1024f;
+		log.text = log.text + "[ "+ DateTime.Now.ToString("HH:mm:ss") +" ] Mensagem Recebida RPC Queue Tamanho : " + fileSize.ToString("0.00") + "MB\n";
 		
 	}
 }
